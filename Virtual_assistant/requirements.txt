@@ -1,0 +1,4 @@
+transformers==4.13.2
+torch==1.10.0
+openai==0.12.0  
+
