@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Virtual Teaching Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <img src="static\gencraf_aiTA.png" alt="Your Image">
+    </div>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>AI Virtual Teaching Assistant</h1>
+        </div>
+        <div class="session-buttons">
+            <button id="new-session-btn">Start New Session</button>
+            <button id="previous-sessions-btn">Select Previous Session</button>
+        </div>
+        <div class="chat-box" id="chat-box">
+            <!-- Previous chat messages will be displayed here -->
+        </div>
+        <form id="chat-form">
+            <input type="text" name="user_message" id="user-input" placeholder="Type a message...">
+            <button type="submit" id="send-btn"><i class="fas fa-paper-plane"></i></button>
+        </form>
+        <a href="/chat-history">View Chat History</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="static/scripts.js"></script>
+</body>
+</html>
+
