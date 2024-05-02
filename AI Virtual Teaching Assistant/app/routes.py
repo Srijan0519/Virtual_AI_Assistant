@@ -7,8 +7,8 @@ from app.AIcomponent import get_ai_response
 
 @app.route('/')
 def index():
-    if 'session_id' not in session:
-        session['session_id'] = str(uuid.uuid4()) 
+    session.pop('session_id', None)
+    session['session_id'] = str(uuid.uuid4())
     return render_template('index.html')
 
 
@@ -21,34 +21,80 @@ def chat():
 
     session_id = session.get('session_id')
 
-    chat_entry = Chat(user_message=user_message, bot_response="Processing...", session_id=session_id)  # Placeholder response
-    db.session.add(chat_entry)
-    db.session.commit()
+    chat_entries = Chat.query.filter_by(session_id=session_id).order_by(Chat.timestamp).all()
+    conversation_history = [entry.message for entry in chat_entries]
 
-    #ai_response = "dummy response"
-    ai_response = get_ai_response(user_message)  # Assuming get_ai_response() function returns the AI's response
-    chat_entry.bot_response = ai_response  
+    conversation_history.append(f"Human: {user_message}")
+
+    ai_response = get_ai_response(conversation_history)
+    conversation_history.append(f"Assistant: {ai_response}")
+
+    user_message_entry = Chat(message=f"Human: {user_message}", session_id=session_id)
+    db.session.add(user_message_entry)
+
+    ai_response_entry = Chat(message=f"Assistant: {ai_response}", session_id=session_id)
+    db.session.add(ai_response_entry)
+
     db.session.commit()
 
     return jsonify({'user_message': user_message, 'bot_response': ai_response})
 
+@app.route('/start-new-session', methods=['POST'])
+def start_new_session():
+    previous_session_id = request.form.get('previous_session_id')
+
+    if previous_session_id:
+        previous_chat_entries = Chat.query.filter_by(session_id=previous_session_id).all()
+        previous_conversation_history = [entry.message for entry in previous_chat_entries]
+    else:
+        previous_conversation_history = []
+
+    session.pop('session_id', None)
+    session['session_id'] = str(uuid.uuid4())
+
+    if previous_conversation_history:
+        chat_entry = Chat(message="\n".join(previous_conversation_history), session_id=session['session_id'])
+        db.session.add(chat_entry)
+        db.session.commit()
+
+    if previous_session_id:
+        Chat.query.filter_by(session_id=previous_session_id).delete()
+        db.session.commit()
+
+    return jsonify({'success': True})
 
 
-@app.route('/bot-response')
-def bot_response():
-    return render_template('bot_response.html')
-
-
-@app.route('/chat-history')
-def chat_history():
+@app.route('/get-session-id', methods=['GET'])
+def get_session_id():
     session_id = session.get('session_id')
-    chat_entries = Chat.query.filter_by(session_id=session_id).all()
-    return render_template('chat_history.html', chat_entries=chat_entries)
+    if session_id:
+        return jsonify({'session_id': session_id})
+    else:
+        return jsonify({'error': 'No session found'}), 404
 
+@app.route('/delete-session', methods=['POST'])
+def delete_session():
+    session_id_to_delete = request.form.get('session_id')
+    if session_id_to_delete:
+        Chat.query.filter_by(session_id=session_id_to_delete).delete()
+        db.session.commit()
+        return jsonify({'success': True})
+    else:
+        return jsonify({'error': 'Invalid session ID'}), 400
 
-@app.route('/delete-chat-entry/<int:entry_id>', methods=['POST'])
-def delete_chat_entry(entry_id):
-    chat_entry = Chat.query.get_or_404(entry_id)
-    db.session.delete(chat_entry)
-    db.session.commit()
-    return redirect(url_for('chat_history'))
+@app.route('/chat-history', methods=['GET'])
+def chat_history():
+    chat_entries = Chat.query.order_by(Chat.session_id, Chat.timestamp).all()
+    chat_history = [entry.to_dict() for entry in chat_entries]
+    return jsonify({'chat_history': chat_history})
+
+@app.route('/get-conversation-history', methods=['POST'])
+def get_conversation_history():
+    session_id = request.form.get('session_id')
+    if session_id:
+        chat_entries = Chat.query.filter_by(session_id=session_id).order_by(Chat.timestamp).all()
+        conversation_history = [entry.message for entry in chat_entries]
+        return jsonify({'conversation_history': conversation_history})
+    else:
+        return jsonify({'error': 'Invalid session ID'}), 400
+    

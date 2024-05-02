@@ -3,33 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Virtual Teaching Assistant</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="static/styles.css">
+    <title>AI Teaching Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" id="theme-css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#theme-select').on('change', function() {
+                var selectedTheme = $(this).val();
+                $('#theme-css').attr('href', "{{ url_for('static', filename='') }}" + selectedTheme);
+            });
+            
+        });
+    </script>
 </head>
 <body>
-    <div class="sidebar">
-        <img src="static\gencraf_aiTA.png" alt="Your Image">
+
+    <div class="theme-selector-container">
+        <select id="theme-select">
+            <option value="styles.css">Default Theme</option>
+            <option value="styles2.css">Dark Theme</option>
+        </select>
     </div>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h1>AI Virtual Teaching Assistant</h1>
-        </div>
-        <div class="session-buttons">
+
+    <div class="app-container">
+        <div class="sidebar">
+            <img src="{{ url_for('static', filename='gencraf_aiTA.png') }}" alt="Logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Image 1" class="logo-image">
             <button id="new-session-btn">Start New Session</button>
-            <button id="previous-sessions-btn">Select Previous Session</button>
+            <button id="view-history-btn">View Chat History</button>
         </div>
-        <div class="chat-box" id="chat-box">
-            <!-- Previous chat messages will be displayed here -->
+        <div class="chat-container">
+            <h1 class="chat-header">AI Teaching Assistant</h1>
+            <div class="chat-box" id="chat-box"></div>
+            <form id="chat-form">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <button type="submit" id="send-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                        <path d="M12 2L2 14h7v8h6v-8h7L12 2zm0 4.47L17.53 12H14v6h-4v-6H6.47L12 6.47z"/>
+                    </svg>
+                </button>
+            </form>
         </div>
-        <form id="chat-form">
-            <input type="text" name="user_message" id="user-input" placeholder="Type a message...">
-            <button type="submit" id="send-btn"><i class="fas fa-paper-plane"></i></button>
-        </form>
-        <a href="/chat-history">View Chat History</a>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="static/scripts.js"></script>
+    <div id="chat-history-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Chat History</h2>
+            <div id="chat-sessions"></div>
+        </div>
+    </div>
 </body>
 </html>
-
