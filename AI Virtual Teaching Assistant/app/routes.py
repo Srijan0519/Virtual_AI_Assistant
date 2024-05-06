@@ -1,9 +1,8 @@
-from flask import render_template, request, jsonify, redirect, url_for, session
+from flask import render_template, request, jsonify, redirect, url_for, session,Response, stream_with_context
 from app import app, db
 from app.models import Chat
 import uuid
 from app.AIcomponent import get_ai_response  
-
 
 @app.route('/')
 def index():
@@ -98,3 +97,51 @@ def get_conversation_history():
     else:
         return jsonify({'error': 'Invalid session ID'}), 400
     
+
+
+# @app.route('/resume-session', methods=['POST'])
+# def resume_session():
+#     session_id = request.form.get('session_id')
+#     if session_id:
+#         chat_entries = Chat.query.filter_by(session_id=session_id).order_by(Chat.timestamp).all()
+#         conversation_history = [entry.message for entry in chat_entries]
+#         session['session_id'] = session_id
+#         return jsonify({'conversation_history': conversation_history})
+#     else:
+#         return jsonify({'error': 'Invalid session ID'}), 400
+    
+    
+# @app.route('/api/chat', methods=['POST'])
+# def chat():
+#     user_message = request.form.get('user_message')
+
+#     if user_message is None or user_message.strip() == "":
+#         return jsonify({'error': 'User message cannot be empty'}), 400
+
+#     session_id = session.get('session_id')
+
+#     # Retrieve the existing conversation history for the current session
+#     existing_chat = Chat.query.filter_by(session_id=session_id).first()
+#     if existing_chat:
+#         conversation_history = existing_chat.conversation_history.split("\n")
+#     else:
+#         conversation_history = []
+
+#     # Append the new message to the conversation history
+#     conversation_history.append(f"Human: {user_message}")
+
+#     # Get the AI response and append it to the conversation history
+#     ai_response = get_ai_response(conversation_history)
+#     conversation_history.append(f"Assistant: {ai_response}")
+
+#     # If an existing chat entry exists, update it with the new conversation history
+#     if existing_chat:
+#         existing_chat.conversation_history = "\n".join(conversation_history)
+#         db.session.commit()
+#     # Otherwise, create a new chat entry with the conversation history
+#     else:
+#         chat_entry = Chat(conversation_history="\n".join(conversation_history), session_id=session_id)
+#         db.session.add(chat_entry)
+#         db.session.commit()
+
+#     return jsonify({'user_message': user_message, 'bot_response': ai_response})

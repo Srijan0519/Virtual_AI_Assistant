@@ -93,24 +93,19 @@ $(document).ready(function() {
         });
     });
 
-    // Function to handle modal close button click
     $('.close-btn').click(function() {
         $('#chat-history-modal').hide();
     });
 
-    // Handle click outside the modal
     $(window).click(function(event) {
         if ($(event.target).parents('#chat-history-modal').length === 0) {
             $('#chat-history-modal').hide();
         }
     });
 
-    // Function to resume a session
     function resumeSession(sessionId) {
-        // Clear the chat box
         $('#chat-box').empty();
     
-        // Fetch the conversation history for the selected session ID
         $.ajax({
             url: '/get-conversation-history',
             type: 'POST',
