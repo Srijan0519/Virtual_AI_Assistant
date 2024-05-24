@@ -1,2 +1,2 @@
-# Virtual_Assistant
+# Virtual_AI_Assistant
 USDC
