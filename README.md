@@ -1,7 +1,7 @@
 # Virtual_AI_Assistant
 ### Aset is a virtual AI assistant designed specifically for edtech platform users, drawing inspiration from the Egyptian goddess of magic, Isis.​
 
-<p>Key Features:-​</p>
+### <p>Key Features:-​</p>
 
 1. Tailored Responses​
 2. Educational Expertise​
