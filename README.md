@@ -1,5 +1,5 @@
 # Virtual_AI_Assistant
-### Aset is a virtual AI assistant designed specifically for USDC users, drawing inspiration from the Egyptian goddess of magic, Isis.​
+### Aset is a virtual AI assistant designed specifically for edtech platform users, drawing inspiration from the Egyptian goddess of magic, Isis.​
 
 Key Features:-​
 
@@ -13,7 +13,7 @@ Key Features:-​
 
 ### Why Aset?​
 
-- Efficiency: Aset streamlines user interactions, delivering swift and accurate responses to inquiries about USDC.​
+- Efficiency: Aset streamlines user interactions, delivering swift and accurate responses to inquiries about the company.​
 - Reliability: Backed by cutting-edge technology, Aset consistently meets MVP criteria, guaranteeing a high-quality user experience.
 
 ## To run the repository
