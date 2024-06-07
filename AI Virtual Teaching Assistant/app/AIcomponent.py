@@ -1,6 +1,7 @@
 # from ak import GROQ_API_KEY 
 from groq import Groq
-from .key import system_promt_1,GROQ_API_KEY,system_promt_srijan,system_promt2
+from groq import RateLimitError
+from .key import system_prompt_1,GROQ_API_KEY
 import os
 
 os.environ["GROQ_API_KEY"] = GROQ_API_KEY
@@ -11,7 +12,7 @@ client = Groq(
 
 system_message = {
     "role": "system",
-    "content": system_promt_1
+    "content": system_prompt_1
 }
 
 def get_ai_response(conversation_history):
@@ -31,10 +32,21 @@ def get_ai_response(conversation_history):
         
         messages.append({"role": role, "content": content})
     
-    chat_completion = client.chat.completions.create(
-        messages=messages,
-        model="llama3-70b-8192",
-    )
-    assistant_response = chat_completion.choices[0].message.content
-    return assistant_response
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=messages,
+            model="llama3-70b-8192",
+        )
+        assistant_response = chat_completion.choices[0].message.content
+        return assistant_response
+    except RateLimitError as e:
+            error_message = "Sorry, you've reached your token limit. Please try again later."
+            print(f"Error: {e}")
+            return error_message
+    except Exception as e:
+        # Catch any other exceptions
+        error_message = "I apologize, but I'm experiencing technical difficulties. Please try again later."
+        print(f"Error: {e}")
+        return error_message
+   
 
