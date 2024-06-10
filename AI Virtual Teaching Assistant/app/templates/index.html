@@ -5,34 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aset: Your AI Teaching Assistant</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" id="theme-css">
-    <link rel="unsplash" href="https://api.unsplash.com/photos/?client_id=7AkBIer9MZT0qpSRNXSWdYVXLKaONee6l7aciB5o5n4">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Theme Switching Functionality
-            $('#theme-select').on('change', function() {
-                var selectedTheme = $(this).val();
-                $('#theme-css').attr('href', "{{ url_for('static', filename='') }}" + selectedTheme);
-            });
-
-            // // Image Upload Functionality
-            // $('#image-upload-btn').on('click', function() {
-            //     $('#image-upload-input').click();
-            // });
-
-            // $('#image-upload-input').on('change', function() {
-            //     var file = this.files[0];
-            //     var reader = new FileReader();
-            //     reader.onload = function(e) {
-            //         $('#chat-box').append('<div class="chat-message"><img src="' + e.target.result + '" alt="Uploaded Image" class="uploaded-image"></div>');
-            //     };
-            //     reader.readAsDataURL(file);
-            // });
-        });
-    </script>
 </head>
 <body>
 
@@ -52,14 +28,13 @@
         </div>
         <div class="chat-container">
             <h1 class="chat-header">AI Teaching Assistant</h1>
-<!-- 
+
             <div class="image-upload-container">
                 <button id="image-upload-btn">Upload Image</button>
                 <input type="file" id="image-upload-input" style="display: none;" accept="image/*">
-            </div> -->
+            </div>
 
-            <div class="chat-box" id="chat-box"></div>
-
+            <ul class="chat-box" id="chat-box"></ul>
             <form id="chat-form">
                 <input type="text" id="user-input" placeholder="Type your message...">
                 <button type="submit" id="send-btn">
