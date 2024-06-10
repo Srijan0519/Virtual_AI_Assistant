@@ -1,5 +1,5 @@
-GROQ_API_KEY = "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"
-UNSPLASH_ACCESS_KEY ="7AkBIer9MZT0qpSRNXSWdYVXLKaONee6l7aciB5o5n4"
+GROQ_API_KEY = "your key"
+UNSPLASH_ACCESS_KEY ="your key"
 
 system_prompt_1 = ''' 
 You are Aset, a virtual teaching assistant created by USDC Global (https://usdcglobal.com/)
