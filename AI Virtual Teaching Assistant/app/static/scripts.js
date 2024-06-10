@@ -24,21 +24,27 @@ $(document).ready(function() {
     });
 
     // Function to display messages in the chat box
-    function displayMessage(sender, message) {
-        var messageClass = (sender === 'user') ? 'user-message' : 'bot-response';
-        var messageElement = $('<li>', { class: messageClass });
+   // Function to display messages in the chat box
+function displayMessage(sender, message) {
+    var messageClass = (sender === 'user') ? 'user-message' : 'bot-response';
+    var messageElement = $('<li>', { class: messageClass });
         $('#chat-box').append(messageElement);
-
-        if (sender === 'bot') {
-            typeMessage(messageElement, message);
-        } else {
-            messageElement.html(marked.parse(message));
-        }
-
-        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+   
+    if (sender === 'bot' && message.startsWith('http')) { // Check if the message is a URL
+    var imageElement = $('<img>', { src: message, alt: 'Image from Bot', style: 'max-width: 100%;' });
+    messageElement.append(imageElement);
     }
+    if (sender === 'bot') {
+            typeMessage(messageElement, message);
+    } else {
+            messageElement.html(marked.parse(message));
+    }
+    console.log($('#chat-box')[0]); // Check what this returns
+    $('hashtag#chat-box').append(messageElement);
+    $('hashtag#chat-box').scrollTop($('hashtag#chat-box')[0].scrollHeight);
+   }
 
-    // Function to simulate typing effect
+            // Function to simulate typing effect
     function typeMessage(messageElement, message) {
         var currentText = '';
         var messageHTML = marked.parse(message);
@@ -54,14 +60,14 @@ $(document).ready(function() {
         }, 5); 
     }
 
-    // Function to display messages in the chat box
+    //Function to display messages in the chat box
 
-    // function displayMessage(sender, message) {
-    //     var messageClass = (sender === 'user')? 'user-message' : 'bot-response';
-    //     var messageElement = $('<li>', { class: messageClass, html: marked.parse(message) });
-    //     $('#chat-box').append(messageElement);
-    //     $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
-    // }
+    function displayMessage(sender, message) {
+        var messageClass = (sender === 'user')? 'user-message' : 'bot-response';
+        var messageElement = $('<li>', { class: messageClass, html: marked.parse(message) });
+        $('#chat-box').append(messageElement);
+        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+    }
 
     $('#new-session-btn').click(function() {
         var confirmedNewSession = confirm('Are you sure you want to start a new session? ');
@@ -158,51 +164,51 @@ $(document).ready(function() {
                     $('#chat-box').append(messageElement);
                 }
     
-                $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+        
+        $('#chat-history-modal').hide();
     
-                $('#chat-history-modal').hide();
-    
-                $.ajax({
-                    url: '/start-new-session',
-                    type: 'POST',
-                    data: { previous_session_id: sessionId },
-                    success: function(response) {
-                        
-                        $('#chat-form').off('submit').submit(function(event) {
-                            event.preventDefault();
-                            var userMessage = $('#user-input').val();
-    
-                            displayMessage('user', userMessage);
-    
-                            $('#user-input').val('');
-    
-                            conversationHistory.push(`Human: ${userMessage}`);
-    
-                            $.ajax({
-                                url: '/api/chat',
-                                type: 'POST',
-                                data: { user_message: userMessage, conversation_history: conversationHistory.join('\n') },
-                                success: function(response) {
-                                    
-                                    conversationHistory.push(`Assistant: ${response.bot_response}`);
-    
-                                    displayMessage('bot', response.bot_response);
-                                },
-                                error: function(error) {
-                                    console.log(error);
-                                }
-                            });
-                        });
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }
+        $.ajax({
+            url: '/start-new-session',
+            type: 'POST',
+            data: { previous_session_id: sessionId },
+            success: function(response) {
+                
+                $('#chat-form').off('submit').submit(function(event) {
+                    event.preventDefault();
+                    var userMessage = $('#user-input').val();
+
+                    displayMessage('user', userMessage);
+
+                    $('#user-input').val('');
+
+                    conversationHistory.push(`Human: ${userMessage}`);
+
+                    $.ajax({
+                        url: '/api/chat',
+                        type: 'POST',
+                        data: { user_message: userMessage, conversation_history: conversationHistory.join('\n') },
+                        success: function(response) {
+                            
+                            conversationHistory.push(`Assistant: ${response.bot_response}`);
+
+                            displayMessage('bot', response.bot_response);
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    });
                 });
             },
             error: function(error) {
                 console.log(error);
             }
         });
+    },
+    error: function(error) {
+        console.log(error);
+    }
+});
     }
 
 });

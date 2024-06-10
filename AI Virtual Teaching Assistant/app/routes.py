@@ -97,6 +97,31 @@ def get_conversation_history():
     else:
         return jsonify({'error': 'Invalid session ID'}), 400
     
+from flask import Flask, request, jsonify
+from app.AIcomponent import get_ai_response
+
+app = Flask(__name__)
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_message = request.json.get('message')
+    conversation_history = ["Human: " + user_message]
+    ai_response = get_ai_response(conversation_history)
+    
+    response_data = {
+        'message': ai_response,
+    }
+    
+    # Extract image URL from AI response if present
+    if "Here is an image" in ai_response:
+        image_url = ai_response.split('Here is an image for')[1].split(':')[1].strip()
+        response_data['imageUrl'] = image_url
+    
+    return jsonify(response_data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 
 # @app.route('/resume-session', methods=['POST'])

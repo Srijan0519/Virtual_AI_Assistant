@@ -1,10 +1,11 @@
-# from ak import GROQ_API_KEY 
+# Existing imports and environment setup
 from groq import Groq
-from groq import RateLimitError
-from .key import system_prompt_1,GROQ_API_KEY
+import requests
+from .key import system_prompt_1, GROQ_API_KEY, IMAGE_API_KEY
 import os
 
 os.environ["GROQ_API_KEY"] = GROQ_API_KEY
+#os.environ["UNSPLASH_API_KEY"] = IMAGE_API_KEY
 
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
@@ -44,9 +45,5 @@ def get_ai_response(conversation_history):
             print(f"Error: {e}")
             return error_message
     except Exception as e:
-        # Catch any other exceptions
-        error_message = "I apologize, but I'm experiencing technical difficulties. Please try again later."
-        print(f"Error: {e}")
-        return error_message
-   
-
+        print(f"Error generating AI response: {e}")
+        return "Error generating response."
